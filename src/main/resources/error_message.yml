@@ -1,0 +1,5 @@
+error:
+  empIdRegEx: Employeee ID should not be empty rather it should be in number type
+  empNameRegEx: Employee Name should not be empty rather should be in String type
+  compRegEx: Company Name should not be empty rather should be in String type
+  salaryRegEx: Salary should not be empty rather should be in number
