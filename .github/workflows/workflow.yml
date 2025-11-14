@@ -1,0 +1,63 @@
+name: Build & Deploy Interview Application
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          java-version: 24
+          distribution: temurin
+
+      - name: Build Interview Spring boot Jar
+        run: mvn clean install
+
+      - name: Upload JAR as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: spring-boot-app
+          path: target/*.jar
+
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Download built JAR
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: spring-boot-app
+
+  #     - name: Copy JAR to remote server
+  #       uses: appleboy/scp-action@v0.1.7
+  #       with:
+  #         host: ${{ secrets.SSH_HOST }}
+  #         username: ${{ secrets.SSH_USER }}
+  #         key: ${{ secrets.SSH_KEY }}
+  #         source: "*.jar"
+  #         target: "~/spring-app"
+
+  #     - name: Restart Spring Boot app
+  #       uses: appleboy/ssh-action@v1.1.0
+  #       with:
+  #         host: ${{ secrets.SSH_HOST }}
+  #         username: ${{ secrets.SSH_USER }}
+  #         key: ${{ secrets.SSH_KEY }}
+  #         script: |
+  #           cd ~/spring-app
+
+  #           # Kill previous process if exists
+  #           pkill -f "*.jar" || true
+
+  #           # Start new version
+  #           nohup java -jar *.jar > app.log 2>&1 &
+  #           echo "App restarted successfully!"
